@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Data</title>
+    <script>
+        async function fetchExercises() {
+            const response = await fetch('/api/exercises');
+            const data = await response.json();
+            displayExercises(data);
+        }
+
+        function displayExercises(data) {
+            const container = document.getElementById('exercises');
+            data.exercises.forEach(exercise => {
+                const exerciseElement = document.createElement('div');
+                exerciseElement.innerHTML = `
+                    <h3>${exercise.name}</h3>
+                    <p>${exercise.description}</p>
+                    ${exercise.video ? `<p><a href="${exercise.video}" target="_blank">Watch Video</a></p>` : ''}
+                `;
+                container.appendChild(exerciseElement);
+            });
+        }
+
+        window.onload = fetchExercises;
+    </script>
+</head>
+<body>
+    <h1>Exercise Data</h1>
+    <div id="exercises"></div>
+</body>
+</html>
