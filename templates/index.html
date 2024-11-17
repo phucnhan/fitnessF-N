@@ -4,31 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .exercise-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .exercise {
+            flex: 1 1 calc(20% - 2rem);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .exercise:hover {
+            transform: scale(1.05);
+        }
+        .exercise h2 {
+            margin-top: 0;
+        }
+        .exercise p {
+            margin: 5px 0;
+        }
+        .exercise video {
+            display: block;
+            margin: 10px 0;
+        }
+        .exercise-details {
+            display: none;
+        }
+        .filter {
+            margin-bottom: 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    
+        /* CSS for fixed size SVGs */
+        .svg-images {
+            display: flex;
+            justify-content: center;  /* Center all images horizontally */
+            align-items: center;      /* Center all images vertically */
+            gap: 20px;                /* Create space between the images */
+            flex-wrap: wrap;          /* Ensure that images wrap to new rows if needed */
+            margin-top: 20px;         /* Optional: margin above the images */
+            margin-bottom: 20px;
+        }
+    
+        .svg-images img {
+            width: 35vh;  /* Adjust width */
+            height: 50vh; /* Adjust height */
+            object-fit: contain; /* Ensure image maintains aspect ratio */
+            display: none; /* Hide by default */
+        }
+    
+        .svg-images img.show {
+            display: inline-block; /* Show only the selected image */
+        }
+    </style>
+    
     <script>
-        async function fetchExercises() {
-            const response = await fetch('/api/exercises');
-            const data = await response.json();
-            displayExercises(data);
+        function toggleDetails(id) {
+            var modal = document.getElementById('modal-' + id);
+            modal.style.display = "block";
         }
 
-        function displayExercises(data) {
-            const container = document.getElementById('exercises');
-            data.exercises.forEach(exercise => {
-                const exerciseElement = document.createElement('div');
-                exerciseElement.innerHTML = `
-                    <h3>${exercise.name}</h3>
-                    <p>${exercise.description}</p>
-                    ${exercise.video ? `<p><a href="${exercise.video}" target="_blank">Watch Video</a></p>` : ''}
-                `;
-                container.appendChild(exerciseElement);
-            });
+        function closeModal(id) {
+            var modal = document.getElementById('modal-' + id);
+            modal.style.display = "none";
         }
 
-        window.onload = fetchExercises;
+        function filterExercises() {
+            var categoryFilter = document.getElementById('categoryFilter').value;
+            var muscleFilter = document.getElementById('muscleFilter').value;
+
+            var exercises = document.getElementsByClassName('exercise');
+            for (var i = 0; i < exercises.length; i++) {
+                var exercise = exercises[i];
+                var category = exercise.getAttribute('data-category');
+                var primaryMuscles = exercise.getAttribute('data-primary-muscles').split(',');
+
+                if ((categoryFilter === "" || category === categoryFilter) &&
+                    (muscleFilter === "" || primaryMuscles.includes(muscleFilter))) {
+                    exercise.style.display = "block";
+                } else {
+                    exercise.style.display = "none";
+                }
+            }
+        }
+
+        function adjustCardSize() {
+            var width = window.innerWidth;
+
+            var exercises = document.getElementsByClassName('exercise');
+            
+            if (width > 1200) {
+                for (var i = 0; i < exercises.length; i++) {
+                    exercises[i].style.flex = "1 1 calc(20% - 2rem)";
+                }
+            } else if (width > 900) {
+                for (var i = 0; i < exercises.length; i++) {
+                    exercises[i].style.flex = "1 1 calc(25% - 2rem)";
+                }
+            } else if (width > 600) {
+                for (var i = 0; i < exercises.length; i++) {
+                    exercises[i].style.flex = "1 1 calc(33.333% - 2rem)";
+                }
+            } else if (width > 400) {
+                for (var i = 0; i < exercises.length; i++) {
+                    exercises[i].style.flex = "1 1 calc(50% - 2rem)";
+                }
+            } else {
+                for (var i = 0; i < exercises.length; i++) {
+                    exercises[i].style.flex = "1 1 calc(100% - 2rem)";
+                }
+            }
+        }
+
+        function showImage(gender) {
+            var maleImages = document.querySelectorAll('.male');
+            var femaleImages = document.querySelectorAll('.female');
+            
+            // Hide all images
+            maleImages.forEach(img => img.classList.remove('show'));
+            femaleImages.forEach(img => img.classList.remove('show'));
+            
+            // Show images based on gender
+            if (gender === 'male') {
+                maleImages.forEach(img => img.classList.add('show'));
+            } else if (gender === 'female') {
+                femaleImages.forEach(img => img.classList.add('show'));
+            }
+        }
+
+        window.onresize = adjustCardSize;
+
+        window.onload = function() {
+          adjustCardSize();
+          filterExercises();
+          showImage('female'); // Default to female images
+        };
     </script>
 </head>
 <body>
     <h1>Exercise Data</h1>
-    <div id="exercises"></div>
+
+    <!-- Gender Toggle Buttons -->
+    <div>
+        <button onclick="showImage('male')">Male</button>
+        <button onclick="showImage('female')">Female</button>
+    </div>
+
+    <!-- Chèn SVG vào trang index.html -->
+    <div class="svg-images">
+        <img src="{{ url_for('static', filename='images/svg/front-male-body.svg') }}" alt="Front Male Body" class="male">
+        <img src="{{ url_for('static', filename='images/svg/front-female-body.svg') }}" alt="Front Female Body" class="female">
+        <img src="{{ url_for('static', filename='images/svg/back-male-body.svg') }}" alt="Back Male Body" class="male">
+        <img src="{{ url_for('static', filename='images/svg/back-female-body.svg') }}" alt="Back Female Body" class="female">
+    </div>
+
+    <div class="filter">
+        <label for="categoryFilter">Category:</label>
+        <select id="categoryFilter" onchange="filterExercises()">
+            <option value="">All</option>
+            {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="muscleFilter">Primary Muscle:</label>
+        <select id="muscleFilter" onchange="filterExercises()">
+            <option value="">All</option>
+            {% for muscle in primary_muscles %}
+                <option value="{{ muscle }}">{{ muscle }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="exercise-container">
+        {% for exercise in exercises %}
+        <div class="exercise" data-category="{{ exercise.category }}" data-primary-muscles="{{ ','.join(exercise.primary_muscles) }}" onclick="toggleDetails('{{ loop.index0 }}')">
+            <h2>{{ exercise.name }}</h2>
+            <p><strong>Category:</strong> {{ exercise.category }}</p>
+            <p><strong>Primary Muscles:</strong> {{ ', '.join(exercise.primary_muscles) }}</p>
+        </div>
+
+        <div id="modal-{{ loop.index0 }}" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('{{ loop.index0 }}')">×</span>
+                <h2>{{ exercise.name }}</h2>
+                <p><strong>Category:</strong> {{ exercise.category }}</p>
+                <p><strong>Primary Muscles:</strong> {{ ', '.join(exercise.primary_muscles) }}</p>
+                <p><strong>Description:</strong> {{ exercise.description or 'N/A' }}</p>
+                <p><strong>Equipment:</strong> {{ ', '.join(exercise.equipment) }}</p>
+                <p><strong>Instructions:</strong> {{ ' '.join(exercise.instructions) }}</p>
+                <p><strong>Secondary Muscles:</strong> {{ ', '.join(exercise.secondary_muscles) }}</p>
+                {% if exercise.video %}
+                <video controls>
+                    <source src="{{ exercise.video }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
