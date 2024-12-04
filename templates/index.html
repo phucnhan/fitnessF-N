@@ -3,46 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercise Data</title>
+    <link rel="icon" href="/static/images/logo.png" />
+    <title>F&N</title>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            margin: 0; 
+            padding: 0; 
         }
+        header {
+            background-color: #000;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%; 
+            position: relative; 
+            box-sizing: border-box;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .header-logo img{
+            width: 3rem;
+            height: 3rem;
+        }
+
+        header nav {
+            margin-top: 10px;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+        }
+
+        header nav a:hover {
+            text-decoration: underline;
+        }
+        .content-container {
+            font-family: Arial, sans-serif;
+            margin-right: 22rem;
+            margin-top: 0;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        .equipment-container {
+            position: fixed;
+            right: 0;
+            top: 120px;
+            height: 60vh;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .equipment-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+            background-color: #fff;
+            font-size: 14px;
+        }
+
+        .equipment-item input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .equipment-item-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .equipment-item:hover {
+            transform: scale(1.05);
+            background-color: #e6f7ff;
+        }
+
+        .equipment-item.active {
+            background-color: #007BFF;
+            color: #fff;
+            border-color: #0056b3;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 20px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            width: 200px;
+        }
+
         .exercise-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 2rem;
+            gap: 1rem;
+            display: none;
         }
+
         .exercise {
-            flex: 1 1 calc(20% - 2rem);
+            flex: 1 1 calc(33.333% - 1rem);
             box-sizing: border-box;
-            margin-bottom: 20px;
-            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            cursor: pointer;
+            padding: 10px;
+            text-align: center;
             transition: transform 0.2s;
         }
+
         .exercise:hover {
             transform: scale(1.05);
         }
-        .exercise h2 {
-            margin-top: 0;
-        }
-        .exercise p {
-            margin: 5px 0;
-        }
-        .exercise video {
-            display: block;
-            margin: 10px 0;
-        }
-        .exercise-details {
-            display: none;
-        }
-        .filter {
-            margin-bottom: 20px;
-        }
+
         .modal {
             display: none;
             position: fixed;
@@ -52,249 +147,208 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
         }
+
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
+            background-color: white;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            border-radius: 10px;
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
-    
-        /* CSS for fixed size SVGs */
-        .svg-images {
-            display: flex;
-            justify-content: center;  /* Center all images horizontally */
-            align-items: center;      /* Center all images vertically */
-            gap: 20px;                /* Create space between the images */
-            flex-wrap: wrap;          /* Ensure that images wrap to new rows if needed */
-            margin-top: 20px;         /* Optional: margin above the images */
-            margin-bottom: 20px;
-        }
-    
-        .svg-images img {
-            width: 35vh;  /* Adjust width */
-            height: 50vh; /* Adjust height */
-            object-fit: contain; /* Ensure image maintains aspect ratio */
-            display: none; /* Hide by default */
-        }
-    
-        .svg-images img.show {
-            display: inline-block; /* Show only the selected image */
-        }
-        /* Định dạng chung cho các phần tử path */
-path {
-  transition: fill 0.3s ease; /* Thêm hiệu ứng chuyển màu */
-}
-
-/* Khi hover vào từng phần tử */
-#hamstrings:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover (màu đỏ nhạt) */
-}
-
-#lowerback:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#glutes:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#lats:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#traps-middle:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#traps:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#shoulders:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#calves:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#triceps:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#forearms:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
-#body:hover path {
-  fill: #ffcccc; /* Đổi màu khi hover */
-}
-
     </style>
-    
     <script>
-        function toggleDetails(id) {
-            var modal = document.getElementById('modal-' + id);
-            modal.style.display = "block";
+        let exercises = [];
+        let selectedEquipment = "";
+        let selectedGender = "male"; // Default gender
+
+        const equipmentIcons = {
+            "none": "🔳",
+            "ez curl bar": "🏋️‍♂️",
+            "barbell": "🏋️",
+            "dumbbell": "💪",
+            "gym mat": "🧘",
+            "exercise ball": "⚽",
+            "medicine ball": "🏐",
+            "pull-up bar": "🤸",
+            "bench": "🪑",
+            "incline bench": "📐",
+            "kettlebell": "🎯",
+            "machine": "🛠️",
+            "cable": "🪢",
+            "bands": "🧵",
+            "foam roll": "🎲",
+            "other": "❓"
+        };
+
+        // Hàm tải dữ liệu (chỉ gọi khi nhấn nút "Go")
+        async function loadExercises() {
+            const category = document.getElementById('categoryFilter').value;
+            const muscle = document.getElementById('muscleFilter').value;
+
+            // Gửi yêu cầu đến server để lọc dữ liệu
+            const response = await fetch(`/filter?category=${category}&muscle=${muscle}&equipment=${selectedEquipment}`);
+            exercises = await response.json();
+
+            updateExerciseList();
         }
 
-        function closeModal(id) {
-            var modal = document.getElementById('modal-' + id);
-            modal.style.display = "none";
+        function populateEquipmentIcons() {
+            const equipmentContainer = document.getElementById('equipmentContainer');
+            equipmentContainer.innerHTML = '';
+
+            Object.entries(equipmentIcons).forEach(([equipment, icon]) => {
+                const div = document.createElement('div');
+                div.className = 'equipment-item';
+                div.innerHTML = `
+                    <input type="radio" name="equipment" value="${equipment}" onclick="selectEquipment('${equipment}')">    
+                    <div style="font-size: 24px;">${icon}</div>
+                    <span>${equipment}</span>
+                    
+                `;
+                equipmentContainer.appendChild(div);
+            });
         }
 
-        function filterExercises() {
-            var categoryFilter = document.getElementById('categoryFilter').value;
-            var muscleFilter = document.getElementById('muscleFilter').value;
-
-            var exercises = document.getElementsByClassName('exercise');
-            for (var i = 0; i < exercises.length; i++) {
-                var exercise = exercises[i];
-                var category = exercise.getAttribute('data-category');
-                var primaryMuscles = exercise.getAttribute('data-primary-muscles').split(',');
-
-                if ((categoryFilter === "" || category === categoryFilter) &&
-                    (muscleFilter === "" || primaryMuscles.includes(muscleFilter))) {
-                    exercise.style.display = "block";
-                } else {
-                    exercise.style.display = "none";
-                }
-            }
+        function selectEquipment(equipment) {
+            selectedEquipment = equipment;
         }
 
-        function adjustCardSize() {
-            var width = window.innerWidth;
+        function updateExerciseList() {
+            const container = document.getElementById('exercise-container');
+            const imageContainer = document.getElementById('image-container');
+            imageContainer.style.display = 'none'; // Ẩn hình ảnh khi lọc
+            container.innerHTML = '';
+            container.style.display = 'flex';
 
-            var exercises = document.getElementsByClassName('exercise');
-            
-            if (width > 1200) {
-                for (var i = 0; i < exercises.length; i++) {
-                    exercises[i].style.flex = "1 1 calc(20% - 2rem)";
-                }
-            } else if (width > 900) {
-                for (var i = 0; i < exercises.length; i++) {
-                    exercises[i].style.flex = "1 1 calc(25% - 2rem)";
-                }
-            } else if (width > 600) {
-                for (var i = 0; i < exercises.length; i++) {
-                    exercises[i].style.flex = "1 1 calc(33.333% - 2rem)";
-                }
-            } else if (width > 400) {
-                for (var i = 0; i < exercises.length; i++) {
-                    exercises[i].style.flex = "1 1 calc(50% - 2rem)";
-                }
-            } else {
-                for (var i = 0; i < exercises.length; i++) {
-                    exercises[i].style.flex = "1 1 calc(100% - 2rem)";
-                }
-            }
+            exercises.forEach((exercise, index) => {
+                const div = document.createElement('div');
+                div.className = 'exercise';
+                div.innerHTML = `
+                    <h3>${exercise.name}</h3>
+                    <p><strong>Category:</strong> ${exercise.category}</p>
+                `;
+                div.onclick = () => showDetails(index);
+                container.appendChild(div);
+            });
         }
 
-        function showImage(gender) {
-            var maleImages = document.querySelectorAll('.male');
-            var femaleImages = document.querySelectorAll('.female');
-            
-            // Hide all images
-            maleImages.forEach(img => img.classList.remove('show'));
-            femaleImages.forEach(img => img.classList.remove('show'));
-            
-            // Show images based on gender
+        function showDetails(index) {
+            const exercise = exercises[index];
+            const modal = document.getElementById('exercise-modal');
+            modal.style.display = 'block';
+            modal.querySelector('.modal-content').innerHTML = `
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>${exercise.name}</h2>
+                <p><strong>Category:</strong> ${exercise.category}</p>
+                <p><strong>Equipment:</strong> ${exercise.equipment}</p>
+                <p><strong>Description:</strong> ${exercise.description || 'N/A'}</p>
+                <p><strong>Primary Muscles:</strong> ${exercise.primary_muscles.join(', ')}</p>
+                <p><strong>Secondary Muscles:</strong> ${exercise.secondary_muscles.join(', ')}</p>
+                <h3>Instructions:</h3>
+                <ul>
+                    ${exercise.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+                </ul>
+                ${
+                    exercise.video
+                        ? `<iframe width="560" height="315" src="${exercise.video.replace('watch?v=', 'embed/')}" 
+                        frameborder="0" allowfullscreen></iframe>`
+                        : '<p><strong>No video available</strong></p>'
+                }
+            `;
+        }
+
+        function closeModal() {
+            document.getElementById('exercise-modal').style.display = 'none';
+        }
+
+        function toggleGender(gender) {
+            selectedGender = gender;
+            const frontImage = document.getElementById('front-body');
+            const backImage = document.getElementById('back-body');
+
             if (gender === 'male') {
-                maleImages.forEach(img => img.classList.add('show'));
-            } else if (gender === 'female') {
-                femaleImages.forEach(img => img.classList.add('show'));
+                frontImage.src = '/static/images/svg/front-male-body.svg';
+                backImage.src = '/static/images/svg/back-male-body.svg';
+            } else {
+                frontImage.src = '/static/images/svg/front-female-body.svg';
+                backImage.src = '/static/images/svg/back-female-body.svg';
             }
         }
 
-        window.onresize = adjustCardSize;
+        function applyFilters() {
+            loadExercises(); // Chỉ gọi hàm này khi người dùng nhấn "Go"
+        }
 
         window.onload = function() {
-          adjustCardSize();
-          filterExercises();
-          showImage('female'); // Default to female images
+            populateEquipmentIcons();
         };
     </script>
 </head>
 <body>
-    <h1>Exercise Data</h1>
+    <header>
+        <div class="header-logo">
+          <img src="/static/images/logo.png"/>
+        </div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Exercises</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <div class="content-container">
+    <h2>Exercise Filter</h2>
 
-    <!-- Gender Toggle Buttons -->
-    <div>
-        <button onclick="showImage('male')">Male</button>
-        <button onclick="showImage('female')">Female</button>
-    </div>
-
-    <!-- Chèn SVG vào trang index.html -->
-    <div class="svg-images">
-        <img src="{{ url_for('static', filename='images/svg/front-male-body.svg') }}" alt="Front Male Body" class="male">
-        <img src="{{ url_for('static', filename='images/svg/front-female-body.svg') }}" alt="Front Female Body" class="female">
-        <img src="{{ url_for('static', filename='images/svg/back-male-body.svg') }}" alt="Back Male Body" class="male">
-        <img src="{{ url_for('static', filename='images/svg/back-female-body.svg') }}" alt="Back Female Body" class="female">
-    </div>
-
-    <div class="filter">
+    <div class="filter-container">
         <label for="categoryFilter">Category:</label>
-        <select id="categoryFilter" onchange="filterExercises()">
+        <select id="categoryFilter">
             <option value="">All</option>
             {% for category in categories %}
                 <option value="{{ category }}">{{ category }}</option>
             {% endfor %}
         </select>
 
-        <label for="muscleFilter">Primary Muscle:</label>
-        <select id="muscleFilter" onchange="filterExercises()">
+        <label for="muscleFilter">Muscle Group:</label>
+        <select id="muscleFilter">
             <option value="">All</option>
-            {% for muscle in primary_muscles %}
+            {% for muscle in muscles %}
                 <option value="{{ muscle }}">{{ muscle }}</option>
             {% endfor %}
         </select>
+        <button onclick="applyFilters()">Go</button>
     </div>
 
-    <div class="exercise-container">
-        {% for exercise in exercises %}
-        <div class="exercise" data-category="{{ exercise.category }}" data-primary-muscles="{{ ','.join(exercise.primary_muscles) }}" onclick="toggleDetails('{{ loop.index0 }}')">
-            <h2>{{ exercise.name }}</h2>
-            <p><strong>Category:</strong> {{ exercise.category }}</p>
-            <p><strong>Primary Muscles:</strong> {{ ', '.join(exercise.primary_muscles) }}</p>
-        </div>
+    
 
-        <div id="modal-{{ loop.index0 }}" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal('{{ loop.index0 }}')">×</span>
-                <h2>{{ exercise.name }}</h2>
-                <p><strong>Category:</strong> {{ exercise.category }}</p>
-                <p><strong>Primary Muscles:</strong> {{ ', '.join(exercise.primary_muscles) }}</p>
-                <p><strong>Description:</strong> {{ exercise.description or 'N/A' }}</p>
-                <p><strong>Equipment:</strong> {{ ', '.join(exercise.equipment) }}</p>
-                <p><strong>Instructions:</strong> {{ ' '.join(exercise.instructions) }}</p>
-                <p><strong>Secondary Muscles:</strong> {{ ', '.join(exercise.secondary_muscles) }}</p>
-                {% if exercise.video %}
-                <video controls>
-                    <source src="{{ exercise.video }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
+    <div class="image-container" id="image-container">
+        <img id="front-body" src="/static/images/svg/front-male-body.svg" alt="Front Body">
+        <img id="back-body" src="/static/images/svg/back-male-body.svg" alt="Back Body">
     </div>
+
+    <div id="equipmentContainer" class="equipment-container"></div>
+
+    <div id="exercise-container" class="exercise-container"></div>
+
+    <div id="exercise-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+    </div>
+</div>
 </body>
 </html>
