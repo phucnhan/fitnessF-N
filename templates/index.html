@@ -11,6 +11,7 @@
             font-family: Arial, sans-serif;
             margin: 0; 
             padding: 0; 
+            background: radial-gradient(#d7d7d7, transparent);
         }
         header {
             background-color: #000;
@@ -49,7 +50,8 @@
         }
         .content-container {
             font-family: Arial, sans-serif;
-            margin-right: 22rem;
+            margin-right: 25rem;
+            margin-left: 2rem;
             margin-top: 0;
         }
 
@@ -107,8 +109,8 @@
         .image-container {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 20px;
+            gap: 3rem;
+            margin-top: 50px;
         }
 
         .image-container img {
@@ -132,6 +134,7 @@
             padding: 10px;
             text-align: center;
             transition: transform 0.2s;
+            background: white;
         }
 
         .exercise:hover {
@@ -156,6 +159,7 @@
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+            border-radius: 1.5rem;
         }
 
         .close {
@@ -200,27 +204,65 @@
         async function loadExercises() {
             const category = document.getElementById('categoryFilter').value;
             const muscle = document.getElementById('muscleFilter').value;
-
+        
             // Gửi yêu cầu đến server để lọc dữ liệu
             const response = await fetch(`/filter?category=${category}&muscle=${muscle}&equipment=${selectedEquipment}`);
-            exercises = await response.json();
-
+            const allExercises = await response.json();
+        
+            // Lọc theo nhóm cơ nếu người dùng chọn muscle
+            if (muscle) {
+                exercises = allExercises.filter(exercise =>
+                    exercise.primary_muscles.includes(muscle)
+                );
+            } else {
+                exercises = allExercises; // Nếu không chọn muscle, hiển thị tất cả
+            }
+        
             updateExerciseList();
         }
-
+        
+        // Cập nhật danh sách nhóm cơ trong dropdown
+        function populateMuscleFilter() {
+            const muscleFilter = document.getElementById('muscleFilter');
+            const allowedMuscles = [
+                "abs", "hamstrings", "adductors", "quads", "biceps", "brachialis",
+                "shoulders", "chest", "middle back", "calves", "glutes", "lower back",
+                "lats", "triceps", "traps", "forearms", "neck", "abductors"
+            ];
+        
+            // Lấy tất cả nhóm cơ từ exercises
+            const allMuscles = new Set();
+            exercises.forEach(exercise => {
+                exercise.primary_muscles.forEach(muscle => {
+                    if (allowedMuscles.includes(muscle)) {
+                        allMuscles.add(muscle);
+                    }
+                });
+            });
+        
+            // Xóa các lựa chọn cũ và thêm mới
+            muscleFilter.innerHTML = '<option value="">All</option>'; // Reset
+            Array.from(allMuscles).forEach(muscle => {
+                const option = document.createElement('option');
+                option.value = muscle;
+                option.textContent = muscle;
+                muscleFilter.appendChild(option);
+            });
+        }
         function populateEquipmentIcons() {
             const equipmentContainer = document.getElementById('equipmentContainer');
-            equipmentContainer.innerHTML = '';
-
-            Object.entries(equipmentIcons).forEach(([equipment, icon]) => {
+            equipmentContainer.innerHTML = ''; // Xóa nội dung cũ nếu có
+            Object.keys(equipmentIcons).forEach(equipment => {
                 const div = document.createElement('div');
                 div.className = 'equipment-item';
                 div.innerHTML = `
-                    <input type="radio" name="equipment" value="${equipment}" onclick="selectEquipment('${equipment}')">    
-                    <div style="font-size: 24px;">${icon}</div>
-                    <span>${equipment}</span>
-                    
+                    <input type="radio" name="equipment" id="${equipment}" value="${equipment}">
+                    <label for="${equipment}">
+                        <span class="equipment-item-icon">${equipmentIcons[equipment]}</span>
+                        <span>${equipment}</span>
+                    </label>
                 `;
+                div.querySelector('input').onclick = () => selectEquipment(equipment);
                 equipmentContainer.appendChild(div);
             });
         }
@@ -312,7 +354,7 @@
         </nav>
     </header>
     <div class="content-container">
-    <h2>Exercise Filter</h2>
+    <h2 style="font-weight:bold">F&N Fitness</h2>
 
     <div class="filter-container">
         <label for="categoryFilter">Category:</label>
@@ -326,11 +368,11 @@
         <label for="muscleFilter">Muscle Group:</label>
         <select id="muscleFilter">
             <option value="">All</option>
-            {% for muscle in muscles %}
-                <option value="{{ muscle }}">{{ muscle }}</option>
+            {% for primary_muscles in primary_muscles %}
+                <option value="{{ primary_muscles }}">{{ primary_muscles }}</option>
             {% endfor %}
         </select>
-        <button onclick="applyFilters()">Go</button>
+        <button style="background: #000; border-radius: 2px; color:white" onclick="applyFilters()">Go</button>
     </div>
 
     
