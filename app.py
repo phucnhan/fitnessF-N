@@ -41,4 +41,4 @@ def filter_exercises():
     return jsonify(filtered_exercises)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8080)
