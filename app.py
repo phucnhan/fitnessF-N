@@ -7,7 +7,7 @@ def read_data(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         return json.load(file)
 
-data = read_data('minified-exercises.json')
+data = read_data('exercises.json')
 
 @app.route('/')
 def index():

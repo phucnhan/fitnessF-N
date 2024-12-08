@@ -130,7 +130,7 @@
       "primary_muscles": [
         "adductors"
       ],
-       "secondary_muscles": [],
+      "secondary_muscles": [],
       "video": "https://www.youtube.com/watch?v=h1xQabdHdes"
     },
     {
@@ -171,7 +171,8 @@
         "glutes",
         "hamstrings",
         "shoulders"
-      ]
+      ],
+      "video": "https://media.musclewiki.com/media/uploads/videos/branded/male-Kettlebells-kettlebell-windmill-front.mp4#t=0.1"
     },
     {
       "category": "strength",
@@ -208,7 +209,8 @@
       ],
       "secondary_muscles": [
         "quads"
-      ]
+      ],
+      "video": ""
     },
     {
       "category": "strength",
@@ -235,7 +237,7 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      "video": "https://media.musclewiki.com/media/uploads/videos/branded/male-Dumbbells-dumbbell-hammer-curl-front.mp4#t=0.1"
     },
     {
       "category": "strength",
@@ -253,7 +255,8 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "video": "https://media.musclewiki.com/media/uploads/videos/branded/male-Bodyweight-alternating-heel-touch-front.mp4#t=0.1"
     },
     {
       "category": "strength",

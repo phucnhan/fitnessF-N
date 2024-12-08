@@ -195,6 +195,19 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .gender {
+            margin: 10px 10px 10px 0px;
+        }
+
+        .gender button {
+            text-decoration: none;
+            font-size: 1rem;
+            width: 6rem;
+        }
+
+        .gender button:hover {
+            background-color: #ad9f9f;
+        }
     </style>
     <script>
         let exercises = [];
@@ -378,7 +391,11 @@
     </header>
     <div class="content-container">
     <h2 style="font-weight:bold">F&N Fitness</h2>
-
+    <div class="gender">
+        <button onclick="toggleGender('male')">Male &#9794</button>
+        <button onclick="toggleGender('female')">Female &#9792</button>
+    </div>
+    
     <div class="filter-container">
         <label for="categoryFilter">Category:</label>
         <select id="categoryFilter">
@@ -398,7 +415,6 @@
         <button style="background: #000; border-radius: 2px; color:white" onclick="applyFilters()">Go</button>
     </div>
 
-    
 
     <div class="image-container" id="image-container">
         <img id="front-body" src="/static/images/svg/front-male-body.svg" alt="Front Body">
