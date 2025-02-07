@@ -41,4 +41,7 @@ def filter_exercises():
     return jsonify(filtered_exercises)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    import os
+    port = int(os.environ.get('PORT', 8080))  # Render tự cung cấp biến môi trường PORT
+    app.run(debug=True, host='0.0.0.0', port=port)
+
